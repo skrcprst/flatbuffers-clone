@@ -1,4 +1,4 @@
 #SHELL
 
-echo oops from sed
+echo oops-from-sed
 exit 44

@@ -1,4 +1,4 @@
 #SHELL
 
-echo oops from ls
+echo oops-from-ls
 exit 42

@@ -1,4 +1,4 @@
 #SHELL
 
-echo oops from xargs
+echo oops-from-xargs
 exit 43

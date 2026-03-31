@@ -1,0 +1,4 @@
+#SHELL
+
+echo oops-from-git
+exit 46

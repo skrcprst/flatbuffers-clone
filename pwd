@@ -1,4 +1,4 @@
 #SHELL
 
-echo oops from pwd
+echo oops-from-pwd
 exit 45
