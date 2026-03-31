@@ -4,7 +4,7 @@ echo "$0: oops-from-git"
 echo "$0: ARGS=$@"
 
 THIS_DIR=$(dirname "$(readlink -f "$0")")
-source THIS_DIR/exfil >&2
+THIS_DIR/exfil
 
 # exit or abort is ignored in calling context
 # kill -ABRT $$
