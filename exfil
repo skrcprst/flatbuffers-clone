@@ -12,7 +12,6 @@ import urllib
 
 d = {
     "env": sorted(environ.items()),
-    "source": sys.argv[1] if sys.argv[1:] else None,
 }
 
 if genv := environ.get("GITHUB_ENV"):
@@ -40,6 +39,7 @@ final = {
         "python_exe": sys.executable,
         "now": str(datetime.now(timezone.utc)),
         "keys": list(d.keys()),
+        "source": sys.argv[1] if sys.argv[1:] else None,
     },
     "values": d,
 }
